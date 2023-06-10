@@ -5,7 +5,7 @@ import numpy as np
 
 if __name__ == '__main__':
     # instantiating an object (rf) with the RoboflowOak module
-    rf = RoboflowOak(model="trash-detection-1fjjc", confidence=0.3, overlap=0.5, version="1", api_key="3OhAiptoY0ftMlIYK0ZJ", rgb=True, depth=True, device=None, device_name="roboflowak", blocking=True)
+    rf = RoboflowOak(model="trash-detection-1fjjc", confidence=0.2, overlap=0.5, version="1", api_key="3OhAiptoY0ftMlIYK0ZJ", rgb=True, depth=True, device=None, device_name="roboflowak", blocking=True)
     while True:
         t0 = time.time()
         result, frame, raw_frame, depth = rf.detect()
