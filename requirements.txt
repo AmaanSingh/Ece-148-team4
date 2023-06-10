@@ -10,5 +10,9 @@ depthai==2.21.2.0
 sentry-sdk==1.5.1
 roboflow
 roboflowoak
+crccheck >= 0.6
+pyserial
+pyvesc
+PyCRC
 Qt.py
 scipy
