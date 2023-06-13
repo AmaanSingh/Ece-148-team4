@@ -13,6 +13,7 @@ roboflowoak
 crccheck >= 0.6
 pyserial
 pyvesc
+Jetson.GPIO
 PyCRC
 Qt.py
 scipy
