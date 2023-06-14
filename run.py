@@ -31,7 +31,7 @@ upper_color = np.array([100, 100, 100])
 
 # Define the initial minimum area threshold
 #min_area_threshold = 500
-min_area_threshold = 112  # Adjust this value
+min_area_threshold = 100  # Adjust this value
 
 # Open the camera
 cap = cv2.VideoCapture(0)  # Use 0 for the default camera, or specify the camera index
@@ -73,6 +73,7 @@ def on_trackbar_change(value):
 
     # Get current trackbar value for minimum area threshold
     min_area_threshold = cv2.getTrackbarPos('Min Area Threshold', 'Color Adjustment')
+    #min_area_threshold = cv2.setTrackbarPos('Min Area Threshold', 'Color Adjustment', 100)
 
     # Scale the standard HSV values to OpenCV HSV values
     lower_hsv_opencv = scale_hsv_std_to_opencv([lower_h, lower_s, lower_v])
@@ -98,7 +99,9 @@ cv2.createTrackbar('Upper S', 'Color Adjustment', upper_color[1], 100, on_trackb
 cv2.createTrackbar('Upper V', 'Color Adjustment', upper_color[2], 100, on_trackbar_change)
 
 # Create a trackbar for minimum area threshold
+
 cv2.createTrackbar('Min Area Threshold', 'Color Adjustment', min_area_threshold, 1000, on_trackbar_change)
+on_trackbar_change(1)
 
 if __name__ == '__main__':
     #garbage-classifier-oehkt
@@ -123,13 +126,15 @@ if __name__ == '__main__':
 
             # Find contours in the mask
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
+
+            min_area_threshold = 100
             # Iterate through the contours and draw centroid on color regions with a significant area
             for contour in contours:
             # Calculate the contour area
                 area = cv2.contourArea(contour)
 
                 if area > min_area_threshold:
+                    #if area > min_area_threshold:
                     # Fan control: Turn on the fan by setting the GPIO pin to HIGH
                     #turn_on_fan()
                     print("fan on")
@@ -147,6 +152,7 @@ if __name__ == '__main__':
             if len(contours) == 0 or all(cv2.contourArea(contour) <= min_area_threshold for contour in contours):
                 #turn_off_fan()
                 print("fan off")
+            
 
             # Display the camera image with color adjustment
             hsv_lower_color_std = scale_hsv_opencv_to_std(lower_color)
@@ -160,8 +166,8 @@ if __name__ == '__main__':
             cv2.imshow('Camera Image', frame)
 
             # Display the color detection result
-            cv2.imshow('Color Detection', result)
-
+            #cv2.imshow('Color Detection', result)
+            
             # Break the loop if the 'q' key is pressed
             #if cv2.waitKey(1) & 0xFF == ord('q'):
             #    break
@@ -236,7 +242,7 @@ if __name__ == '__main__':
             #max_depth = np.amax(depth)
             #cv2.imshow("depth", depth/max_depth)
         # displaying the video feed as successive frames
-            cv2.imshow("frame", oakd)
+            #cv2.imshow("frame", oakd)
 
             
         # how to close the OAK inference window / stop inference: CTRL+q or CTRL+c
