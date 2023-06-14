@@ -21,19 +21,25 @@ def turn_off_fan():
     print("Fan turned off")
 
 # Initialize the GPIO
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(RELAY_PIN, GPIO.OUT)
-GPIO.output(RELAY_PIN, GPIO.HIGH)
+#GPIO.setmode(GPIO.BOARD)
+#GPIO.setup(RELAY_PIN, GPIO.OUT)
+#GPIO.output(RELAY_PIN, GPIO.HIGH)
 
 
-lower_color = np.array([0, 0, 0])  # Adjust these values
+lower_color = np.array([0, 46, 45])  # Adjust these values
 upper_color = np.array([100, 100, 100])
 
 # Define the initial minimum area threshold
-min_area_threshold = 500  # Adjust this value
+#min_area_threshold = 500
+min_area_threshold = 112  # Adjust this value
 
 # Open the camera
 cap = cv2.VideoCapture(0)  # Use 0 for the default camera, or specify the camera index
+#cap.set(3, 100)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH,200)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT,200)
+#cap.set(4, 100)
+
 
 # Scale the OpenCV HSV values to standard HSV values (0-100)
 def scale_hsv_opencv_to_std(hsv):
@@ -95,15 +101,17 @@ cv2.createTrackbar('Upper V', 'Color Adjustment', upper_color[2], 100, on_trackb
 cv2.createTrackbar('Min Area Threshold', 'Color Adjustment', min_area_threshold, 1000, on_trackbar_change)
 
 if __name__ == '__main__':
+    #garbage-classifier-oehkt
     # instantiating an object (rf) with the RoboflowOak module
-    rf = RoboflowOak(model="trash-detection-1fjjc", confidence=0.3, overlap=0.5, version="1", api_key="3OhAiptoY0ftMlIYK0ZJ", rgb=True, depth=False, device=None, device_name="roboflowak", blocking=True)
+    rf = RoboflowOak(model="trash-detection-1fjjc", confidence=0.3, overlap=0.5, version="1", api_key="rpXuR77dJadV87dnpl4Q", rgb=True, depth=False, device=None, device_name="roboflowak", blocking=True)
+    #rf = RoboflowOak(model="trash-detection-1fjjc", confidence=0.3, overlap=0.5, version="1", api_key="3OhAiptoY0ftMlIYK0ZJ", rgb=True, depth=False, device=None, device_name="roboflowak", blocking=True)
     with serial.Serial(serialport, baudrate=115200, timeout=0.05) as ser:
         while True:
             t0 = time.time()
             result, oakd, raw_frame, depth = rf.detect()
             predictions = result["predictions"]
             ret, frame = cap.read()
-
+            
             # Convert the frame to the HSV color space
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -123,8 +131,8 @@ if __name__ == '__main__':
 
                 if area > min_area_threshold:
                     # Fan control: Turn on the fan by setting the GPIO pin to HIGH
-                    turn_on_fan()
-                    #print("fan on")
+                    #turn_on_fan()
+                    print("fan on")
 
                     # Calculate the centroid of the contour
                     M = cv2.moments(contour)
@@ -137,8 +145,8 @@ if __name__ == '__main__':
 
             # Turn off the fan if no contours meet the area threshold
             if len(contours) == 0 or all(cv2.contourArea(contour) <= min_area_threshold for contour in contours):
-                turn_off_fan()
-                #print("fan off")
+                #turn_off_fan()
+                print("fan off")
 
             # Display the camera image with color adjustment
             hsv_lower_color_std = scale_hsv_opencv_to_std(lower_color)
@@ -152,7 +160,7 @@ if __name__ == '__main__':
             cv2.imshow('Camera Image', frame)
 
             # Display the color detection result
-            #cv2.imshow('Color Detection', result)
+            cv2.imshow('Color Detection', result)
 
             # Break the loop if the 'q' key is pressed
             #if cv2.waitKey(1) & 0xFF == ord('q'):
